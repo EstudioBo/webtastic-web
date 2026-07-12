@@ -1,0 +1,979 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webtastic — Tu web corporativa en 7 días</title>
+<meta name="description" content="Diseñamos y publicamos tu web corporativa profesional en 7 días. Sin reuniones interminables, sin complicaciones.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 stop-color=%22%236D28D9%22/><stop offset=%2250%25%22 stop-color=%22%23EC4899%22/><stop offset=%22100%25%22 stop-color=%22%23F97316%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22url(%23g)%22/><path d=%22M50 12 C52 32 68 48 88 50 C68 52 52 68 50 88 C48 68 32 52 12 50 C32 48 48 32 50 12 Z%22 fill=%22white%22/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --grad: linear-gradient(135deg, #6D28D9 0%, #EC4899 50%, #F97316 100%);
+    --dark: #0F0B1E;
+    --dark-2: #181229;
+    --light: #FAFAF9;
+    --text-dark: #111827;
+    --text-muted: #6b7280;
+    --purple: #6D28D9;
+    --pink: #EC4899;
+    --orange: #F97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background: var(--light);
+    overflow-x: hidden;
+    cursor: none;
+  }
+  a, button, summary, .fit-card, .price-card { cursor: none; }
+  h1, h2, h3, .wm {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .accent {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .accent.kinetic { color: inherit; background: none; }
+  .accent.kinetic .ch {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* GRAIN OVERLAY */
+  .grain {
+    position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+    opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor-dot {
+    position: fixed; top:0; left:0; width: 8px; height: 8px; border-radius: 50%;
+    background: #fff; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%);
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    position: fixed; top:0; left:0; width: 36px; height: 36px; border-radius: 50%;
+    border: 1.5px solid rgba(236,72,153,0.7); pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%); transition: width 0.25s, height 0.25s, border-color 0.25s, background 0.25s;
+  }
+  #cursor-ring.hover { width: 64px; height: 64px; background: rgba(236,72,153,0.12); }
+  #spark-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 9997; }
+
+  @media (max-width: 900px) {
+    body, a, button, summary, .fit-card, .price-card { cursor: auto; }
+    #cursor-dot, #cursor-ring, #spark-canvas { display: none; }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--grad);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 17px 34px;
+    border-radius: 100px;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(236,72,153,0.35);
+    transition: transform 0.15s ease, box-shadow 0.25s ease;
+    border: none;
+  }
+  .btn:hover { box-shadow: 0 16px 40px rgba(236,72,153,0.45); }
+  .btn.ghost {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    box-shadow: none;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 0;
+    background: rgba(15,11,30,0.0);
+    transition: background 0.3s ease, backdrop-filter 0.3s ease, padding 0.3s ease;
+  }
+  nav.scrolled {
+    background: rgba(15,11,30,0.85);
+    backdrop-filter: blur(12px);
+    padding: 12px 0;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; }
+  .wm-nav {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 22px; color: #fff;
+  }
+  .wm-nav .spark { font-size: 18px; color: transparent; background: var(--grad); -webkit-background-clip:text; background-clip:text; filter: drop-shadow(0 0 6px rgba(236,72,153,0.6)); }
+  nav .btn { padding: 11px 22px; font-size: 13px; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 140px 0 140px;
+  }
+  #mesh-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
+  .grid-lines {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+  }
+  section .grid-lines {
+    background-image: linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black, transparent);
+  }
+  .grid-lines.tinted {
+    background-image: linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px);
+  }
+  .hero-content { position: relative; z-index: 2; text-align: center; width: 100%; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: #c4b5fd; margin-bottom: 30px;
+    border: 1px solid rgba(196,181,253,0.3);
+    padding: 8px 18px; border-radius: 100px;
+    opacity: 0;
+  }
+  .headline {
+    font-size: clamp(34px, 5.5vw, 58px);
+    color: #fff; line-height: 1.18; margin-bottom: 30px;
+    max-width: 760px; margin-left: auto; margin-right: auto;
+  }
+  .equation {
+    display: inline-flex; align-items: baseline; justify-content: center;
+    gap: 14px; flex-wrap: wrap;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1;
+    margin-bottom: 36px;
+    padding: 10px 26px;
+    border: 1px solid rgba(196,181,253,0.25);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.03);
+  }
+  .equation .eq-sign { font-size: clamp(18px, 2.5vw, 26px); color: #8b7cb8; display: inline-block; opacity: 0; }
+  .equation span.white { color: #fff; }
+  .kinetic { display: inline-flex; overflow: hidden; white-space: pre; }
+  .kinetic .ch { display: inline-block; opacity: 0; white-space: pre; }
+
+  .hero .lead {
+    color: #cbd5e1; font-size: 18px; max-width: 480px;
+    margin: 0 auto 40px; line-height: 1.6;
+    opacity: 0;
+  }
+  .hero .cta-row {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    opacity: 0;
+  }
+
+  .scroll-cue {
+    position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%);
+    z-index: 2; color: #8b7cb8; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0;
+  }
+  .scroll-cue .line { width: 1px; height: 28px; background: linear-gradient(#8b7cb8, transparent); animation: scrollDown 1.8s ease-in-out infinite; }
+  @keyframes scrollDown { 0% { transform: scaleY(0.3); opacity: 0.3; } 50% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0.3); opacity: 0.3; } }
+
+  /* MARQUEE BANNER */
+  .banner {
+    background: var(--grad);
+    padding: 20px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+  }
+  .marquee-track { display: inline-flex; animation: marquee 22s linear infinite; }
+  .marquee-track span {
+    color: #fff; font-family: 'Poppins', sans-serif; font-weight: 700;
+    font-size: 18px; padding: 0 36px; display: inline-flex; align-items: center; gap: 14px;
+  }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* REVEAL (driven by GSAP ScrollTrigger) */
+  .reveal { opacity: 0; }
+  .reveal-child { opacity: 0; }
+
+  /* SECTION GENERIC */
+  section { padding: 130px 0; position: relative; }
+  .section-tag {
+    font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--pink); font-weight: 700; margin-bottom: 28px; display: block;
+  }
+  .section-title { font-size: clamp(28px, 4vw, 44px); margin-bottom: 18px; max-width: 640px; }
+  .section-lead { color: var(--text-muted); font-size: 17px; max-width: 560px; line-height: 1.6; margin-bottom: 56px; }
+
+  /* PARA QUIEN */
+  .para-quien { background: var(--light); padding: 80px 0; }
+  .para-quien-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .para-quien-inner { grid-template-columns: 1fr; }
+    .browser-mock-wrap { display: none; }
+  }
+
+  /* BROWSER MOCKUP */
+  .browser-mock-wrap {
+    perspective: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .browser-mock {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 32px 80px rgba(109,40,217,0.18), 0 8px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform: rotateX(4deg) rotateY(-8deg);
+    transition: box-shadow 0.3s ease;
+  }
+  .bm-bar {
+    background: #f0eef8;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #e4e1f0;
+  }
+  .bm-dots { display: flex; gap: 6px; }
+  .bm-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .bm-dots span:nth-child(1) { background: #ff5f57; }
+  .bm-dots span:nth-child(2) { background: #febc2e; }
+  .bm-dots span:nth-child(3) { background: #28c840; }
+  .bm-url {
+    flex: 1;
+    background: #fff;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: #888;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid #e0ddf0;
+  }
+  .bm-body { padding: 20px; }
+  .bm-hero-fake {
+    height: 90px;
+    background: linear-gradient(135deg, #6D28D9 0%, #EC4899 50%, #F97316 100%);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .bm-hero-fake .bm-line {
+    height: 8px; border-radius: 4px; background: rgba(255,255,255,0.5);
+  }
+  .bm-hero-fake .bm-line:nth-child(1) { width: 60%; }
+  .bm-hero-fake .bm-line:nth-child(2) { width: 40%; background: rgba(255,255,255,0.3); }
+  .bm-rows { display: flex; flex-direction: column; gap: 8px; }
+  .bm-row { display: flex; gap: 8px; }
+  .bm-block {
+    border-radius: 7px;
+    background: #f0eef8;
+    height: 48px;
+    flex: 1;
+  }
+  .bm-block.tall { height: 72px; }
+  .bm-block.accent { background: linear-gradient(135deg, #6D28D9 0%, #EC4899 100%); opacity: 0.15; }
+  .bm-tag {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #EC4899;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+  }
+  .bm-badge {
+    position: absolute;
+    bottom: -14px;
+    right: -14px;
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #6D28D9 0%, #EC4899 50%, #F97316 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.2;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 8px 24px rgba(109,40,217,0.35);
+    animation: floatBadge 3s ease-in-out infinite;
+  }
+  .browser-mock-wrap { position: relative; }
+  @keyframes floatBadge {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-8px) rotate(-6deg); }
+  }
+  .fit-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .fit-card {
+    background: #fff; border-radius: 20px; padding: 32px 28px;
+    border: 1px solid #ece9f4;
+    box-shadow: 0 4px 20px rgba(109,40,217,0.04);
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .fit-card:nth-child(2) { transform: translateY(-14px); }
+  .fit-card:hover { box-shadow: 0 20px 50px rgba(109,40,217,0.14); }
+  .fit-card .ico {
+    width: 48px; height: 48px; border-radius: 14px; background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 22px; margin-bottom: 18px;
+  }
+  .fit-card h3 { font-size: 17px; margin-bottom: 8px; }
+  .fit-card p { color: var(--text-muted); font-size: 14.5px; line-height: 1.55; }
+
+  /* COMO FUNCIONA */
+  .como-funciona { background: var(--dark); color: #fff; }
+  .como-funciona .section-lead { color: #a8a3bd; }
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .step {
+    position: relative; padding: 0 20px 20px 0;
+    transition: transform 0.4s ease;
+  }
+  .step-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 20px 20px 0;
+    gap: 16px;
+  }
+  .step-cta p {
+    color: #a8a3bd;
+    font-size: 15px;
+    margin: 0;
+  }
+  .step:hover { transform: translateY(-8px); }
+  .step .num {
+    font-family: 'Poppins',sans-serif; font-weight: 900; font-size: 50px;
+    background: var(--grad); -webkit-background-clip:text; background-clip:text; color: transparent;
+    margin-bottom: 14px; display: block;
+  }
+  .step h3 { font-size: 16px; margin-bottom: 8px; color: #fff; }
+  .step p { color: #a8a3bd; font-size: 14px; line-height: 1.55; }
+  .timeline-note {
+    margin-top: 56px; padding: 22px 26px; border-radius: 16px;
+    background: rgba(236,72,153,0.08); border: 1px solid rgba(236,72,153,0.25);
+    font-size: 14.5px; color: #d8d2e8; line-height: 1.6;
+  }
+  .timeline-note b { color: #fff; }
+
+  /* QUIEN ESTA DETRAS */
+  .quien { background: var(--light); }
+  .quien .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .quien .avatar {
+    width: 100%; aspect-ratio: 1; border-radius: 28px;
+    background: var(--grad); position: relative;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.4s ease;
+  }
+  .quien .avatar {
+    transform-style: preserve-3d;
+    box-shadow: 16px 32px 64px rgba(109,40,217,0.28), 4px 8px 20px rgba(0,0,0,0.18);
+    transform: perspective(900px) rotateY(10deg) rotateX(6deg);
+    transition: box-shadow 0.4s ease;
+  }
+  .quien .avatar span {
+    font-family: 'Poppins',sans-serif; font-weight: 800; font-size: 64px; color: #fff;
+  }
+  .quien h2 { font-size: 26px; margin-bottom: 14px; }
+  .quien p { color: var(--text-muted); font-size: 16px; line-height: 1.7; max-width: 540px; }
+  .quien p + p { margin-top: 14px; }
+  @media (max-width: 680px) {
+    .quien .wrap { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  }
+
+  /* PRECIO */
+  .precio { background: var(--dark); color: #fff; text-align: center; }
+  .precio .section-lead { color: #a8a3bd; margin: 0 auto 56px; }
+  .price-card {
+    max-width: 460px; margin: 0 auto;
+    background: var(--dark-2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px; padding: 48px 40px;
+    position: relative; overflow: hidden;
+    transition: transform 0.2s ease;
+    transform-style: preserve-3d;
+  }
+  .price-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--grad);
+  }
+  .price-card .amount {
+    font-family: 'Poppins',sans-serif; font-weight: 900; font-size: 68px;
+    margin-bottom: 6px;
+  }
+  .price-card .amount span { font-size: 22px; color: #a8a3bd; font-weight: 600; }
+  .price-card .terms { color: #a8a3bd; font-size: 14px; margin-bottom: 28px; }
+  .price-card ul { list-style: none; text-align: left; margin-bottom: 32px; }
+  .price-card li { padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.06); font-size: 14.5px; color: #d8d2e8; display: flex; gap: 10px; }
+  .price-card li:first-child { border-top: none; }
+  .price-card li::before { content: '✦'; color: var(--pink); flex-shrink: 0; }
+  .price-note { margin-top: 28px; font-size: 13.5px; color: #8b85a0; }
+
+  /* FAQ */
+  .faq { background: var(--light); }
+  .faq-item { border-bottom: 1px solid #e7e3f0; }
+  .faq-item summary {
+    list-style: none; cursor: pointer; padding: 22px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    font-family: 'Poppins',sans-serif; font-weight: 700; font-size: 16.5px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary .plus {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--grad); color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: transform 0.3s ease;
+  }
+  .faq-item[open] summary .plus { transform: rotate(45deg); }
+  .faq-item .answer { padding: 0 0 22px; color: var(--text-muted); font-size: 15px; line-height: 1.65; max-width: 680px; }
+
+  /* CTA FINAL */
+  .cta-final {
+    background: var(--grad); text-align: center; padding: 150px 0;
+    position: relative; overflow: hidden;
+  }
+  .cta-final h2 { color: #fff; font-size: clamp(34px,6vw,56px); margin-bottom: 18px; }
+  .cta-final p { color: rgba(255,255,255,0.9); font-size: 17px; margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .cta-final .btn { background: #fff; color: var(--purple); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .cta-final .note { margin-top: 18px; color: rgba(255,255,255,0.75); font-size: 13.5px; }
+
+  footer {
+    background: var(--dark); color: #6b6580; text-align: center; padding: 40px 0; font-size: 13px;
+  }
+  footer .wm-nav { justify-content: center; margin-bottom: 10px; opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<canvas id="spark-canvas"></canvas>
+<div id="cursor-ring"></div>
+<div id="cursor-dot"></div>
+
+<nav id="nav">
+  <div class="wrap">
+    <div class="wm-nav">Web<span class="spark">✦</span>tastic</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="/contacto" class="btn ghost" style="color:#fff;" data-hover>Contacto</a>
+      <a href="https://calendly.com/hola-webtastic/30min" class="btn" data-hover onclick="Calendly.initPopupWidget({url:'https://calendly.com/hola-webtastic/30min'});return false;">Reservar llamada</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="mesh-canvas"></canvas>
+  <div class="grid-lines"></div>
+  <div class="wrap hero-content">
+    <div class="badge">✦ Última tecnología. Resultado profesional.</div>
+    <h1 class="headline">
+      <span class="kinetic" id="kin-0"></span><br>
+      El próximo <span id="day-name">lunes</span>, con una <span class="accent">web fantástica</span>.
+    </h1>
+    <div class="equation">
+      <span class="white kinetic" id="kin-1"></span>
+      <span class="eq-sign">=</span>
+      <span class="accent kinetic" id="kin-2"></span>
+    </div>
+    <p class="lead">Una web corporativa fantástica, diseñada y publicada con la última tecnología. Sin vueltas, sin esperas.</p>
+    <div class="cta-row">
+      <a href="https://calendly.com/hola-webtastic/30min" class="btn" data-hover onclick="Calendly.initPopupWidget({url:'https://calendly.com/hola-webtastic/30min'});return false;">Reservar llamada de 15 min</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Sigue bajando</span><span class="line"></span></div>
+</header>
+
+<div class="banner">
+  <div class="marquee-track">
+    <span>✦ ¿A que quieres una web como esta? ✦</span><span>✦ Spoiler: tu web puede quedar igual de fantástica ✦</span><span>✦ Sí, esta web también la hicimos nosotros ✦</span><span>✦ Diseñada y publicada en 1 día</span><span>✦ ¿A que quieres una web como esta? ✦</span><span>✦ Spoiler: tu web puede quedar igual de fantástica ✦</span><span>✦ Sí, esta web también la hicimos nosotros ✦</span><span>✦ Diseñada y publicada en 1 día</span>
+  </div>
+</div>
+
+<section class="para-quien">
+  <div class="wrap reveal">
+    <div class="para-quien-inner">
+      <div class="para-quien-left">
+        <span class="section-tag">Para quién es</span>
+        <h2 class="section-title">Si tu empresa necesita un escaparate online <span class="accent">de verdad</span></h2>
+        <p class="section-lead">Webtastic es para negocios y profesionales que quieren presentarse online de forma seria y profesional, sin pagar ni esperar por funcionalidades que no necesitan.</p>
+      </div>
+      <div class="browser-mock-wrap">
+        <div class="browser-mock" id="browser-mock">
+          <div class="bm-bar">
+            <div class="bm-dots"><span></span><span></span><span></span></div>
+            <div class="bm-url">www.tuempresa.com</div>
+          </div>
+          <div class="bm-body">
+            <div class="bm-tag">✦ Webtastic</div>
+            <div class="bm-hero-fake">
+              <div class="bm-line"></div>
+              <div class="bm-line"></div>
+            </div>
+            <div class="bm-rows">
+              <div class="bm-row">
+                <div class="bm-block accent"></div>
+                <div class="bm-block tall"></div>
+              </div>
+              <div class="bm-row">
+                <div class="bm-block"></div>
+                <div class="bm-block accent"></div>
+                <div class="bm-block"></div>
+              </div>
+              <div class="bm-row">
+                <div class="bm-block tall"></div>
+                <div class="bm-block accent"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bm-badge">7 días</div>
+      </div>
+    </div>
+    <div class="fit-grid">
+      <div class="fit-card reveal-child" data-hover>
+        <div class="ico">✦</div>
+        <h3>Empresas y profesionales</h3>
+        <p>Que necesitan una web corporativa clara: quiénes son, qué hacen, cómo contactar — sin complicar lo que no hace falta.</p>
+      </div>
+      <div class="fit-card reveal-child" data-hover>
+        <div class="ico">✦</div>
+        <h3>Quien valora su tiempo</h3>
+        <p>Sin reuniones interminables ni procesos eternos. Nos cuentas lo esencial y nosotros nos encargamos del resto.</p>
+      </div>
+      <div class="fit-card reveal-child" data-hover>
+        <div class="ico">✦</div>
+        <h3>Quien quiere algo profesional ya</h3>
+        <p>Stack moderno, rendimiento real, velocidad punta y un diseño que impresiona desde el primer clic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="como-funciona">
+  <div class="grid-lines"></div>
+  <div class="wrap reveal">
+    <span class="section-tag">Cómo funciona</span>
+    <h2 class="section-title">De una idea a una web realmente fantástica, en 5 pasos</h2>
+    <p class="section-lead">Un proceso simple, pensado para que tú apenas tengas que preocuparte de nada.</p>
+    <div class="steps">
+      <div class="step reveal-child">
+        <span class="num">01</span>
+        <h3>Llamada inicial</h3>
+        <p>Hablamos 15 minutos para entender tu negocio y lo que necesitas.</p>
+      </div>
+      <div class="step reveal-child">
+        <span class="num">02</span>
+        <h3>Nos das tu contenido</h3>
+        <p>Nos pasas textos, logo e imágenes — o te ayudamos a definirlos.</p>
+      </div>
+      <div class="step reveal-child">
+        <span class="num">03</span>
+        <h3>Propuesta de diseño</h3>
+        <p>En 3 días tienes la primera versión visual de tu web.</p>
+      </div>
+      <div class="step reveal-child">
+        <span class="num">04</span>
+        <h3>Ajustes</h3>
+        <p>Revisamos juntos y afinamos los detalles que quieras cambiar.</p>
+      </div>
+      <div class="step reveal-child">
+        <span class="num">05</span>
+        <h3>Publicación</h3>
+        <p>Tu web sale a producción, lista para recibir visitas.</p>
+      </div>
+      <div class="step-cta reveal-child">
+        <a href="https://calendly.com/hola-webtastic/30min" class="btn" data-hover onclick="Calendly.initPopupWidget({url:'https://calendly.com/hola-webtastic/30min'});return false;">Reservar llamada gratuita</a>
+      </div>
+    </div>
+    <div class="timeline-note">
+      <b>Ojo:</b> el reloj no empieza a contar hasta que nos des el material. Sin contenido no hay web. Somos buenas, pero no tanto ;)
+    </div>
+  </div>
+</section>
+
+<section class="quien">
+  <div class="wrap reveal">
+    <div class="avatar" id="sara-avatar" data-hover><img src="assets/SarisPi.png" alt="Sara Piñeiro" style="width:100%;height:100%;object-fit:cover;border-radius:28px;display:block;"></div>
+    <div>
+      <span class="section-tag">Quién está detrás</span>
+      <h2>Sara Piñeiro</h2>
+      <p>Llevo años haciendo webs para todo tipo de negocios: corporativas, ecommerce, reservas, ONGs, restaurantes, festivales... Y estoy segura, tu negocio también necesita una web.</p>
+      <p>Siempre con WordPress hasta que la tecnología cambió las reglas del juego — así que me formé, me metí de lleno y me quedé.</p>
+      <p>¿Por qué tu web tiene un precio asumible y se entrega tan rápido? Porque soy experta en IA y pongo todos mis conocimientos en marcha para que quede fantástica sin dejarte un agujero en el banco. Eso sí: esto no es un SaaS automático. Detrás de tu web estoy yo, de principio a fin.</p>
+    </div>
+  </div>
+</section>
+
+<section class="precio">
+  <div class="grid-lines"></div>
+  <div class="wrap reveal">
+    <span class="section-tag">Precio</span>
+    <h2 class="section-title" style="margin:0 auto 18px;">Una tarifa clara, sin sorpresas</h2>
+    <p class="section-lead">Todo incluido: diseño, desarrollo y publicación de tu web corporativa.</p>
+    <div class="price-card" data-tilt>
+      <div class="amount">700€</div>
+      <div class="terms">40% al confirmar el proyecto · 60% a la entrega</div>
+      <ul>
+        <li>Web corporativa informativa, diseño a medida</li>
+        <li>Diseño y desarrollo completos</li>
+        <li>Publicación incluida</li>
+        <li>¿Necesitas tienda, reservas u otras funcionalidades? Hablamos y te hacemos un presupuesto a medida</li>
+      </ul>
+      <a href="https://calendly.com/hola-webtastic/30min" class="btn" data-hover onclick="Calendly.initPopupWidget({url:'https://calendly.com/hola-webtastic/30min'});return false;">Reservar llamada gratuita</a>
+      <p class="price-note">¿Necesitas algo más complejo (tienda, reservas, blog)? Hablamos y lo vemos a medida.</p>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="wrap reveal">
+    <span class="section-tag">Preguntas frecuentes</span>
+    <h2 class="section-title">Lo que me suelen preguntar</h2>
+    <div>
+      <details class="faq-item reveal-child" open>
+        <summary>¿Qué necesito preparar antes de empezar?<span class="plus">+</span></summary>
+        <div class="answer">Textos sobre tu negocio, logo, tipografías, colores... todo lo que tengas referente a tu marca e imágenes que quieras usar. Ten en cuenta que el plazo de los 7 días empieza a contar cuando tengamos todo este material.</div>
+      </details>
+      <details class="faq-item reveal-child">
+        <summary>¿Qué pasa si necesito cambios después de la entrega?<span class="plus">+</span></summary>
+        <div class="answer">Depende de lo que necesites. Para cambios puntuales te paso un presupuesto específico. Si prefieres tener horas disponibles sin tener que pedir presupuesto cada vez, también puedes contratar packs de horas para estar siempre cubiert@. Y si tu web tiene funcionalidades más específicas, podemos valorar un mantenimiento mensual. Cada caso es diferente, pero nunca te voy a dejar colgad@ una vez entregada la web.</div>
+      </details>
+      <details class="faq-item reveal-child">
+        <summary>¿Y si mi negocio crece y necesito algo más complejo?<span class="plus">+</span></summary>
+        <div class="answer">Sin problema. Si en el futuro necesitas tienda online, motor de reservas u otras funcionalidades, lo hablamos y te hago un presupuesto a medida.</div>
+      </details>
+      <details class="faq-item reveal-child">
+        <summary>¿Qué tecnología usáis?<span class="plus">+</span></summary>
+        <div class="answer">Cada web la construyo con código limpio, sin WordPress, sin plugins, sin lastre. Se despliegan en infraestructura cloud de última generación: carga ultrarrápida, seguras y sin caídas. Uso IA en todo el proceso de diseño y construcción, lo que me permite entregar en días lo que antes tardaba semanas.</div>
+      </details>
+      <details class="faq-item reveal-child">
+        <summary>¿Quién gestiona el dominio y el hosting?<span class="plus">+</span></summary>
+        <div class="answer">Lo vemos según tu caso: puedes gestionarlo tú directamente, o podemos encargarnos nosotros (con su correspondiente renovación anual gestionada).</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final" id="cta">
+  <div class="grid-lines tinted"></div>
+  <div class="wrap reveal">
+    <h2>7 días = tu web</h2>
+    <p>Reserva una llamada gratuita y sin compromiso. Hablamos de tu proyecto y vemos si Webtastic es para ti.</p>
+    <div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <a href="https://calendly.com/hola-webtastic/30min" class="btn" data-hover onclick="Calendly.initPopupWidget({url:'https://calendly.com/hola-webtastic/30min'});return false;">Reservar llamada gratuita</a>
+      <a href="/contacto" class="btn" style="background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.6);" data-hover>Escribirme</a>
+    </div>
+    <p class="note">Sin compromiso · 15 minutos · Desde 700€</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="wm-nav" style="color:#fff;">Web<span class="spark">✦</span>tastic</div>
+    <p>© 2026 Webtastic — un servicio de Estudio bO</p>
+  </div>
+</footer>
+
+<script>
+try {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // NAV scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // KINETIC TEXT SPLIT (built before animating)
+  function splitKinetic(id, text) {
+    const el = document.getElementById(id);
+    text.split('').forEach((ch) => {
+      const span = document.createElement('span');
+      span.className = 'ch';
+      span.textContent = ch === ' ' ? ' ' : ch;
+      el.appendChild(span);
+    });
+    return el.querySelectorAll('.ch');
+  }
+  const chars0 = splitKinetic('kin-0', 'Hoy sin web.');
+  const chars1 = splitKinetic('kin-1', '7 días');
+  const chars2 = splitKinetic('kin-2', 'tu web');
+  gsap.set([chars0, chars1, chars2], { opacity: 0, yPercent: 120, rotate: 8 });
+
+  // NEXT BUSINESS DAY, 7 WORKDAYS OUT (SKIPS WEEKENDS)
+  function addBusinessDays(date, days) {
+    const d = new Date(date);
+    let added = 0;
+    while (added < days) {
+      d.setDate(d.getDate() + 1);
+      const dow = d.getDay();
+      if (dow !== 0 && dow !== 6) added++;
+    }
+    return d;
+  }
+  const weekdayNames = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const targetDate = addBusinessDays(new Date(), 7);
+  document.getElementById('day-name').textContent = weekdayNames[targetDate.getDay()];
+
+  // HERO ENTRANCE TIMELINE
+  gsap.set(['.badge', '.hero .lead', '.hero .cta-row'], { y: 24 });
+  const heroTl = gsap.timeline({ delay: 0.2 });
+  heroTl
+    .to('.badge', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0)
+    .to(chars0, { opacity: 1, yPercent: 0, rotate: 0, duration: 0.6, ease: 'power4.out', stagger: 0.025 }, 0.15)
+    .to(chars1, { opacity: 1, yPercent: 0, rotate: 0, duration: 0.7, ease: 'power4.out', stagger: 0.045 }, 0.95)
+    .to('.equation .eq-sign', { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.35)
+    .to(chars2, { opacity: 1, yPercent: 0, rotate: 0, duration: 0.7, ease: 'power4.out', stagger: 0.045 }, 1.4)
+    .to('.hero .lead', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 1.9)
+    .to('.hero .cta-row', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 2.05)
+    .to('.scroll-cue', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 2.3);
+
+  // SCROLL-TRIGGERED SECTION REVEALS
+  document.querySelectorAll('.reveal').forEach((el) => {
+    const children = el.querySelectorAll('.reveal-child');
+    const targets = children.length ? children : el.children;
+    gsap.set(targets, { opacity: 0, y: 50 });
+    gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 95%', once: true } })
+      .to(el, { opacity: 1, duration: 0.01 })
+      .to(targets, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08 }, 0);
+  });
+
+  // PARALLAX ON HERO MESH + GRID
+  gsap.to('#mesh-canvas', {
+    yPercent: 18, ease: 'none',
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+  });
+  gsap.to('.grid-lines', {
+    yPercent: 10, ease: 'none',
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+  });
+
+  // PARALLAX ON SECTION TAGS
+  document.querySelectorAll('.section-tag').forEach((tag) => {
+    gsap.to(tag, {
+      y: -30, ease: 'none',
+      scrollTrigger: { trigger: tag.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+  });
+
+  // CUSTOM CURSOR (GSAP quickTo for buttery follow)
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  const dotX = gsap.quickTo(dot, 'left', { duration: 0.1, ease: 'power3' });
+  const dotY = gsap.quickTo(dot, 'top', { duration: 0.1, ease: 'power3' });
+  const ringX = gsap.quickTo(ring, 'left', { duration: 0.45, ease: 'power3' });
+  const ringY = gsap.quickTo(ring, 'top', { duration: 0.45, ease: 'power3' });
+  window.addEventListener('mousemove', (e) => {
+    dotX(e.clientX); dotY(e.clientY);
+    ringX(e.clientX); ringY(e.clientY);
+  });
+  document.querySelectorAll('[data-hover]').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+
+  // SARA AVATAR 3D TILT on hover
+  const saraAvatar = document.getElementById('sara-avatar');
+  if (saraAvatar) {
+    saraAvatar.addEventListener('mousemove', (e) => {
+      const r = saraAvatar.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(saraAvatar, {
+        rotateY: x * 22,
+        rotateX: -y * 14,
+        scale: 1.03,
+        duration: 0.4,
+        ease: 'power2.out',
+        transformPerspective: 900,
+        boxShadow: '0 32px 80px rgba(109,40,217,0.28)',
+      });
+    });
+    saraAvatar.addEventListener('mouseleave', () => {
+      gsap.to(saraAvatar, {
+        rotateY: -4, rotateX: 3, scale: 1,
+        duration: 0.8, ease: 'power3.out',
+        boxShadow: '8px 16px 40px rgba(109,40,217,0.18), 2px 4px 12px rgba(0,0,0,0.12)',
+      });
+    });
+  }
+
+  // BROWSER MOCK 3D PARALLAX
+  const mock = document.getElementById('browser-mock');
+  if (mock) {
+    const wrap = mock.closest('.browser-mock-wrap');
+    wrap.addEventListener('mousemove', (e) => {
+      const r = wrap.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(mock, {
+        rotateY: x * 22,
+        rotateX: -y * 14,
+        duration: 0.4,
+        ease: 'power2.out',
+        transformPerspective: 900,
+      });
+    });
+    wrap.addEventListener('mouseleave', () => {
+      gsap.to(mock, { rotateY: -8, rotateX: 4, duration: 0.8, ease: 'power3.out' });
+    });
+  }
+
+  // FAQ ACCORDION — close others on open
+  document.querySelectorAll('.faq-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      if (!item.open) {
+        document.querySelectorAll('.faq-item[open]').forEach((other) => {
+          if (other !== item) other.removeAttribute('open');
+        });
+      }
+    });
+  });
+
+  // MAGNETIC BUTTONS
+  document.querySelectorAll('.btn[data-hover]').forEach((btn) => {
+    const bx = gsap.quickTo(btn, 'x', { duration: 0.3, ease: 'power3' });
+    const by = gsap.quickTo(btn, 'y', { duration: 0.3, ease: 'power3' });
+    btn.addEventListener('mousemove', (e) => {
+      const r = btn.getBoundingClientRect();
+      bx((e.clientX - r.left - r.width / 2) * 0.25);
+      by((e.clientY - r.top - r.height / 2) * 0.25);
+    });
+    btn.addEventListener('mouseleave', () => { bx(0); by(0); });
+  });
+
+  // SPARK TRAIL CANVAS
+  const sparkCanvas = document.getElementById('spark-canvas');
+  const sctx = sparkCanvas.getContext('2d');
+  let particles = [];
+  function resizeSpark() { sparkCanvas.width = innerWidth; sparkCanvas.height = innerHeight; }
+  resizeSpark(); window.addEventListener('resize', resizeSpark);
+  let lastSpark = 0;
+  window.addEventListener('mousemove', (e) => {
+    const now = performance.now();
+    if (now - lastSpark > 40) {
+      lastSpark = now;
+      particles.push({ x: e.clientX, y: e.clientY, life: 1, r: 2 + Math.random() * 2 });
+    }
+  });
+  const colors = ['#6D28D9', '#EC4899', '#F97316'];
+  (function animateSparks() {
+    sctx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+    particles = particles.filter((p, i) => {
+      p.life -= 0.03; p.y -= 0.4;
+      if (p.life <= 0) return false;
+      sctx.globalAlpha = p.life;
+      sctx.fillStyle = colors[i % colors.length];
+      sctx.beginPath();
+      sctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+      sctx.fill();
+      return true;
+    });
+    sctx.globalAlpha = 1;
+    requestAnimationFrame(animateSparks);
+  })();
+
+  // ANIMATED MESH GRADIENT IN HERO
+  const mesh = document.getElementById('mesh-canvas');
+  const mctx = mesh.getContext('2d');
+  function resizeMesh() {
+    mesh.width = mesh.parentElement.offsetWidth;
+    mesh.height = mesh.parentElement.offsetHeight;
+  }
+  resizeMesh(); window.addEventListener('resize', resizeMesh);
+  const blobs = [
+    { x: 0.2, y: 0.25, r: 0.38, c: '#6D28D9', sx: 0.00021, sy: 0.00017, ax: 0.12, ay: 0.10, t: 0 },
+    { x: 0.8, y: 0.7, r: 0.34, c: '#EC4899', sx: 0.00016, sy: 0.0002, ax: 0.10, ay: 0.12, t: 2 },
+    { x: 0.65, y: 0.25, r: 0.22, c: '#F97316', sx: 0.00025, sy: 0.00014, ax: 0.08, ay: 0.08, t: 4 },
+  ];
+  function drawMesh(time) {
+    mctx.clearRect(0, 0, mesh.width, mesh.height);
+    blobs.forEach(b => {
+      const cx = (b.x + Math.sin(time * b.sx + b.t) * b.ax) * mesh.width;
+      const cy = (b.y + Math.cos(time * b.sy + b.t) * b.ay) * mesh.height;
+      const r = b.r * Math.max(mesh.width, mesh.height);
+      const grad = mctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      grad.addColorStop(0, b.c + 'aa');
+      grad.addColorStop(1, b.c + '00');
+      mctx.fillStyle = grad;
+      mctx.beginPath();
+      mctx.arc(cx, cy, r, 0, Math.PI * 2);
+      mctx.fill();
+    });
+    requestAnimationFrame(drawMesh);
+  }
+  requestAnimationFrame(drawMesh);
+
+  // TILT ON PRICE CARD
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `perspective(800px) rotateY(${px * 8}deg) rotateX(${-py * 8}deg)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+} catch(e) { console.error('Script error:', e); }
+</script>
+
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+</body>
+</html>
