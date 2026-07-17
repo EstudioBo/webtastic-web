@@ -115,9 +115,20 @@
   .check-label a { color: #6D28D9; text-decoration: underline; }
   .form-note { font-size: 13px; color: var(--text-muted); margin-top: 12px; text-align: center; }
   .success-msg {
-    display: none; text-align: center; padding: 20px;
-    color: #059669; font-weight: 600; font-size: 15px;
+    display: none; text-align: center; padding: 48px 12px;
   }
+  .success-msg .success-icon {
+    width: 72px; height: 72px; margin: 0 auto 24px;
+    border-radius: 50%; background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 32px;
+    box-shadow: 0 10px 30px rgba(109,40,217,0.3);
+  }
+  .success-msg h2 {
+    font-size: 28px; margin-bottom: 12px;
+    background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .success-msg p { color: var(--text-muted); font-size: 16px; line-height: 1.6; }
 
   /* FOOTER */
   footer {
@@ -148,7 +159,7 @@
       </div>
     </div>
     <div class="contact-form">
-      <h2>¿En qué puedo ayudarte?</h2>
+      <h2 id="form-title">¿En qué puedo ayudarte?</h2>
       <form id="contact-form" action="https://hook.eu1.make.com/wukxt6x7b4yfp3piql7p32q4vunwl5pq" method="POST">
         <div class="field">
           <label for="nombre">Nombre <span style="color:var(--pink)">*</span></label>
@@ -175,7 +186,11 @@
         <button type="submit" class="btn grad form-submit">Enviar mensaje</button>
         <p class="form-note">Sin compromiso · Te respondo en menos de 24h</p>
       </form>
-      <div class="success-msg" id="success-msg">¡Mensaje recibido! Te escribo en menos de 24 horas.</div>
+      <div class="success-msg" id="success-msg">
+        <div class="success-icon">✦</div>
+        <h2>¡Mensaje recibido!</h2>
+        <p>Te escribo en menos de 24 horas.</p>
+      </div>
     </div>
   </div>
 </main>
@@ -208,6 +223,7 @@
     });
     if (res.ok) {
       form.style.display = 'none';
+      document.getElementById('form-title').style.display = 'none';
       document.getElementById('success-msg').style.display = 'block';
     }
   });
