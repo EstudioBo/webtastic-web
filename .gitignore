@@ -3,3 +3,6 @@
 docs/
 notas-brainstorming.md
 assets/branding/
+
+# Local Netlify folder
+.netlify

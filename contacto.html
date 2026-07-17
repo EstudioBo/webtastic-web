@@ -149,7 +149,7 @@
     </div>
     <div class="contact-form">
       <h2>¿En qué puedo ayudarte?</h2>
-      <form id="contact-form" action="https://formspree.io/f/XXXXXXXX" method="POST">
+      <form id="contact-form" action="https://hook.eu1.make.com/wukxt6x7b4yfp3piql7p32q4vunwl5pq" method="POST">
         <div class="field">
           <label for="nombre">Nombre <span style="color:var(--pink)">*</span></label>
           <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
@@ -182,15 +182,30 @@
 
 <footer>
   <div class="wm-nav" style="color:#fff;">Web<span class="spark">✦</span>tastic</div>
-  <p>© 2026 Webtastic — un servicio de Estudio bO</p>
+  <p>© 2026 Webtastic</p>
+  <p style="margin-top:12px;font-size:12px;">
+    <a href="/aviso-legal" style="color:rgba(255,255,255,0.4);text-decoration:none;margin:0 10px;">Aviso legal</a>
+    <a href="/privacidad" style="color:rgba(255,255,255,0.4);text-decoration:none;margin:0 10px;">Política de privacidad</a>
+    <a href="/cookies" style="color:rgba(255,255,255,0.4);text-decoration:none;margin:0 10px;">Política de cookies</a>
+  </p>
 </footer>
 
 <script>
   const form = document.getElementById('contact-form');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = new FormData(form);
-    const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+    const payload = {
+      nombre: form.nombre.value,
+      email: form.email.value,
+      mensaje: form.mensaje.value,
+      privacidad: form.privacidad.checked,
+      novedades: form.novedades.checked
+    };
+    const res = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
     if (res.ok) {
       form.style.display = 'none';
       document.getElementById('success-msg').style.display = 'block';
