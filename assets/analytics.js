@@ -165,11 +165,11 @@
     // así se puede leer libremente antes de decidir.
     addReopenButton();
   } else {
+    var showDelayed = function () { setTimeout(buildModal, 3000); addReopenButton(); };
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { buildModal(); addReopenButton(); });
+      document.addEventListener('DOMContentLoaded', showDelayed);
     } else {
-      buildModal();
-      addReopenButton();
+      showDelayed();
     }
   }
 })();
