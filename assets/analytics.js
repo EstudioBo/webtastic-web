@@ -61,9 +61,6 @@
     '.cc-btn-primary:hover{box-shadow:0 16px 40px rgba(236,72,153,0.45);}' +
     '.cc-btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3) !important;}' +
     '.cc-btn-ghost:hover{border-color:rgba(255,255,255,0.6) !important;}' +
-    '#cc-reopen{position:fixed;bottom:20px;left:20px;z-index:9998;width:44px;height:44px;border-radius:50%;' +
-    'background:#181229;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 24px rgba(0,0,0,0.35);' +
-    'cursor:pointer;font-size:19px;display:flex;align-items:center;justify-content:center;}' +
     '@media (max-width:480px){#cc-actions{flex-direction:column-reverse;align-items:stretch;}' +
     '.cc-main-btns{justify-content:stretch;}.cc-main-btns .cc-btn{flex:1;}#cc-settings-btn{text-align:center;}}';
   document.head.appendChild(styleTag);
@@ -140,36 +137,21 @@
     });
   }
 
-  function addReopenButton() {
-    if (document.getElementById('cc-reopen')) return;
-    var btn = document.createElement('button');
-    btn.id = 'cc-reopen';
-    btn.type = 'button';
-    btn.title = 'Preferencias de cookies';
-    btn.setAttribute('aria-label', 'Preferencias de cookies');
-    btn.textContent = '🍪';
-    btn.addEventListener('click', buildModal);
-    document.body.appendChild(btn);
-  }
-
   var isCookiePolicyPage = /\/cookies(\.html)?\/?$/.test(location.pathname);
 
   var consent = localStorage.getItem(STORAGE_KEY);
   if (consent === 'granted') {
     loadGA();
-    addReopenButton();
   } else if (consent === 'denied') {
-    addReopenButton();
+    // ya decidido, nada que hacer
   } else if (isCookiePolicyPage) {
     // En la propia página de política de cookies no forzamos el modal:
     // así se puede leer libremente antes de decidir.
-    addReopenButton();
   } else {
-    var showDelayed = function () { setTimeout(buildModal, 3000); addReopenButton(); };
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', showDelayed);
+      document.addEventListener('DOMContentLoaded', function () { setTimeout(buildModal, 3000); });
     } else {
-      showDelayed();
+      setTimeout(buildModal, 3000);
     }
   }
 })();
